@@ -55,28 +55,24 @@ player = Player(room['outside'])
 #
 # If the user enters "q", quit the game.
 
-def check_route(parameter_list):
-    pass
-
+def check_route(player_loc, choice):
+    dir = choice + "_to"
+    if hasattr(player_loc, dir):
+        player.loc = getattr(player_loc, dir)
+    else:
+        print(f"\n You looked but don't see anything in that direction.")
 
 while is_playing != 'q':
-    print(f" \n {player.room} \n")
-    # print(player.room.n_to)
+    print(f" \n {player.loc} \n")
     user_input = input("Which way will you go now? (N, W, S, E): ").lower()
-    # user_input = 'n'
 
     if user_input == 'n':
-        next = getattr(player.room, user_input + "_to")
-        setattr(player, 'room', next)
+        check_route(player.loc, user_input)
     elif user_input == 'w':
-        next = getattr(player.room, user_input + "_to")
-        setattr(player, 'room', next)
+        check_route(player.loc, user_input)
     elif user_input == 'e':
-        next = getattr(player.room, user_input + "_to")
-        setattr(player, 'room', next)
+        check_route(player.loc, user_input)
     elif user_input == 's':
-        next = getattr(player.room, user_input + "_to")
-        setattr(player, 'room', next)
-
-
-    # is_playing = 'q'
+        check_route(player.loc, user_input)
+    elif user_input == 'q':
+        is_playing = user_input
