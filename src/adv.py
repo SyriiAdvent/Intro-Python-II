@@ -55,13 +55,26 @@ player = Player(room['outside'])
 #
 # If the user enters "q", quit the game.
 
+def check_route(parameter_list):
+    pass
+
 
 while is_playing != 'q':
-    print(player.room)
+    print(f" \n {player.room} \n")
     # print(player.room.n_to)
     user_input = input("Which way will you go now? (N, W, S, E): ").lower()
+    # user_input = 'n'
 
     if user_input == 'n':
+        next = getattr(player.room, user_input + "_to")
+        setattr(player, 'room', next)
+    elif user_input == 'w':
+        next = getattr(player.room, user_input + "_to")
+        setattr(player, 'room', next)
+    elif user_input == 'e':
+        next = getattr(player.room, user_input + "_to")
+        setattr(player, 'room', next)
+    elif user_input == 's':
         next = getattr(player.room, user_input + "_to")
         setattr(player, 'room', next)
 
