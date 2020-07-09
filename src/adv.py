@@ -87,22 +87,46 @@ def game_began():
     print(f" \n {player.loc} \n")
 
 
+def action_menu():
+    action_menu = input('What would you like to do next: ').lower()
+    for choice in action_menu.split():
+        if choice == 'move' or choice == 'go':
+            direction_choice(action_menu)
+        elif choice == 'drop' or choice == 'remove':
+            map_items()
+
+
 # User direction handler
 # TODO: extract quit game
-def direction_choice():
-    user_input = input("Which way will you go now? (N, W, S, E): ").lower()
+def direction_choice(choice=None):
+    a = choice.split()
+    
+    if len(a) <= 1:
+        user_input = input("Which way will you go now? (N, W, S, E): ").lower()
 
-    if user_input == "n":
-        check_route(player.loc, user_input)
-    elif user_input == "w":
-        check_route(player.loc, user_input)
-    elif user_input == "e":
-        check_route(player.loc, user_input)
-    elif user_input == "s":
-        check_route(player.loc, user_input)
-    elif user_input == "q":
-        global is_playing
-        is_playing = user_input
+        if user_input == "n":
+            check_route(player.loc, user_input)
+        elif user_input == "w":
+            check_route(player.loc, user_input)
+        elif user_input == "e":
+            check_route(player.loc, user_input)
+        elif user_input == "s":
+            check_route(player.loc, user_input)
+        elif user_input == "q":
+            global is_playing
+            is_playing = user_input
+    else:
+        for direction in choice.split():
+            if direction == "n":
+                check_route(player.loc, direction)
+            elif direction == "w":
+                check_route(player.loc, direction)
+            elif direction == "e":
+                check_route(player.loc, direction)
+            elif direction == "s":
+                check_route(player.loc, direction)
+            elif direction == "q":
+                is_playing = direction
 
 # Will check if a cardinal direction is a valid map direction
 def check_route(player_loc, choice):
@@ -156,13 +180,18 @@ while is_playing != "q":
     # Init Game
     game_began()
 
+    # Deal with player interactions
+    # knows how to deal with (move, go)
+    # TODO pickup,drop,remove, inspect
+    action_menu()
+
     # ask user to interact with any map items
     map_items()
     
     # User direction choice
-    direction_choice()
+    # direction_choice()
 
     # Puzzle Keys
-    for i in player.items:
-        if i.name == 'Flashlight':
-            room['foyer']['description'] = "With your flashlight you now see theres a access hatch leading underground. Wind blows in from the south flowing into the stairwell"
+    # for i in player.items:
+    #     if i.name == 'Flashlight':
+    #         room['shed']['description'] = "With your flashlight you now see theres a access hatch leading underground. Wind blows in from the south flowing into the stairwell"
