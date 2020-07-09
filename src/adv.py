@@ -1,7 +1,6 @@
-from room import Room
 from player import Player
+from room import Room
 from item import Item
-
 
 # Declare all the rooms
 
@@ -29,6 +28,9 @@ to north. The smell of gold permeates the air.""",
 chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south.""",
     ),
+    "shed": Room('shed', """You find yourself staring into a dark abyss, maybe a light source could help? Head back for now?"""
+    ),
+    "stairwell": Room("stairwell", """You walk down the solid stone stairs and your flashlight suddenly dies.""")
 }
 
 
@@ -38,6 +40,9 @@ room["outside"].n_to = room["foyer"]
 room["foyer"].s_to = room["outside"]
 room["foyer"].n_to = room["overlook"]
 room["foyer"].e_to = room["narrow"]
+room["foyer"].w_to = room["shed"]
+room["shed"].s_to = room["foyer"]
+room["shed"].n_to = room["stairwell"]
 room["overlook"].s_to = room["foyer"]
 room["narrow"].w_to = room["foyer"]
 room["narrow"].n_to = room["treasure"]
@@ -45,12 +50,16 @@ room["treasure"].s_to = room["narrow"]
 
 # Initialize items
 iron_sword = Item(
-    "Sword","The sword appears to be old, however you feel it still has some shine and glory!",
+    "Sword","The sword appears to be old, however you feel it still has some shine and glory!"
+)
+flashlight = Item(
+    'Flashlight', "Appears to be rather new. It Even has batteries."
 )
 
 
 # Add Items to the Room
 room["foyer"].items = [iron_sword]
+room['overlook'].items = [flashlight]
 
 
 #
@@ -76,6 +85,7 @@ player = Player(room["outside"])
 
 def game_began():
     print(f" \n {player.loc} \n")
+
 
 # User direction handler
 # TODO: extract quit game
@@ -122,7 +132,12 @@ def input_parser(a):
             for i in player.loc.items:
                 if word == i.name.lower():
                     player.items.append(i)
-                    del player.loc.items[i.id]
+                    player.loc.items.remove(i)
+
+                    # how to delete item based on its dictionary id
+                    # for ids in player.loc.items:
+                    #     if i.id == ids.id:
+                    #         player.loc.items.remove(ids)
                     
     elif a == 'yes' or 'take':
         player.items.append(iron_sword)
@@ -133,7 +148,7 @@ def map_items():
     items_amount = len(player.loc.items)
     item_choice = show_items()
 
-    if item_choice >= 1:
+    if item_choice:
         take_item = input(f"Will you take the {player.loc.items[item_choice - 1].name}: ").lower()
         input_parser(take_item)
 
@@ -146,3 +161,8 @@ while is_playing != "q":
     
     # User direction choice
     direction_choice()
+
+    # Puzzle Keys
+    for i in player.items:
+        if i.name == 'Flashlight':
+            room['foyer']['description'] = "With your flashlight you now see theres a access hatch leading underground. Wind blows in from the south flowing into the stairwell"
