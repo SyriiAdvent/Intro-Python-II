@@ -2,6 +2,7 @@
 # currently.
 
 class Player:
-  def __init__(self, loc, items=[]):
+  def __init__(self, loc, items=[], hasLight=False):
     self.loc = loc
     self.items = items
+    self.hasLight = hasLight
