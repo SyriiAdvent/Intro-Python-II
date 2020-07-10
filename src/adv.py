@@ -30,7 +30,9 @@ earlier adventurers. The only exit is to the south.""",
     ),
     "shed": Room('shed', """You find yourself staring into a dark abyss, maybe a light source could help? Head back for now?"""
     ),
-    "stairwell": Room("stairwell", """You walk down the solid stone stairs and your flashlight suddenly dies.""")
+    "stairwell": Room("stairwell", """You walk down the solid stone stairs and your flashlight suddenly dies."""
+    ),
+    "dead": Room("dead", "\n")
 }
 
 
@@ -43,6 +45,7 @@ room["foyer"].e_to = room["narrow"]
 room["foyer"].w_to = room["shed"]
 room["shed"].s_to = room["foyer"]
 room["shed"].n_to = room["stairwell"]
+room["stairwell"].n_to = room["dead"]
 room["overlook"].s_to = room["foyer"]
 room["narrow"].w_to = room["foyer"]
 room["narrow"].n_to = room["treasure"]
@@ -92,8 +95,8 @@ def action_menu():
     for choice in action_menu.split():
         if choice == 'move' or choice == 'go':
             direction_choice(action_menu)
-        elif choice == 'drop' or choice == 'remove':
-            map_items()
+        elif choice == 'inspect' or choice == 'pickup' or choice == 'take':
+            input_parser(action_menu)
 
 
 # User direction handler
@@ -145,8 +148,8 @@ def show_items():
         for item in player.loc.items:
             print(f"\t{str(i)}) {item.name}: {item.description}")
             print("\n")
-        item_choice = input(f"Select a item to interact with: ")
-        return int(item_choice)
+        # item_choice = input(f"Select a item to interact with: ")
+        # return int(item_choice)
 
 def input_parser(a):
     s = a.lower().split()
@@ -157,14 +160,15 @@ def input_parser(a):
                 if word == i.name.lower():
                     player.items.append(i)
                     player.loc.items.remove(i)
+                    print(f"You picked up {i.name}")
 
                     # how to delete item based on its dictionary id
                     # for ids in player.loc.items:
                     #     if i.id == ids.id:
                     #         player.loc.items.remove(ids)
                     
-    elif a == 'yes' or 'take':
-        player.items.append(iron_sword)
+    # elif a == 'yes' or 'take':
+    #     player.items.append(iron_sword)
 
 
 # Handles the user interacting with any items in map
@@ -180,18 +184,27 @@ while is_playing != "q":
     # Init Game
     game_began()
 
+    # show any items in room
+    show_items()
+
     # Deal with player interactions
     # knows how to deal with (move, go)
     # TODO pickup,drop,remove, inspect
     action_menu()
 
-    # ask user to interact with any map items
-    map_items()
     
     # User direction choice
     # direction_choice()
 
     # Puzzle Keys
-    # for i in player.items:
-    #     if i.name == 'Flashlight':
-    #         room['shed']['description'] = "With your flashlight you now see theres a access hatch leading underground. Wind blows in from the south flowing into the stairwell"
+    if player.loc == room['foyer']:
+        for i in player.items:
+            if i.name == 'Flashlight':
+                room['shed'] = Room("shed", "With your flashlight you now see theres a access hatch leading underground. Wind blows in from the south flowing into the stairwell")
+                room["foyer"].w_to = room["shed"]
+                room["shed"].s_to = room["foyer"]
+                room["shed"].n_to = room["stairwell"]
+    
+    if player.loc == room['dead']:
+        print("""You tripped and tumbled down cracking and breaking bones from head to toe, You died paralysed. Slowly.... \n Game Over...""")
+        is_playing = 'q'
